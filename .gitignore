@@ -3,5 +3,4 @@
 **/**.png
 **/**.jpg
 **/**.jpeg
-pose_estimation/onnxruntime_lib/VERSION_NUMBER
 **/**.onnx
