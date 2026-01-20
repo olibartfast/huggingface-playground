@@ -2,7 +2,7 @@ huggingface_venv
 **/*.wav
 **/build
 owlvit_onnx
-huggingface-cpp-inference-client/*.png
-huggingface-cpp-inference-client/*.jpg
-huggingface-cpp-inference-client/*.jpeg
+huggingface-inference-provider-cpp-client/*.png
+huggingface-inference-provider-cpp-client/*.jpg
+huggingface-inference-provider-cpp-client/*.jpeg
 owl2_onnx

@@ -14,7 +14,7 @@ C++ and Python implementations for Hugging Face models, focusing on computer vis
 ## Repository Structure
 
 ### C++ examples
-- **huggingface-cpp-inference-client**: C++ client for Hugging Face Serverless Inference API. Supports object detection, image classification, image segmentation, and image-text-to-text generation. Uses `libcurl`, `OpenCV`, and `nlohmann/json`.
+- **huggingface-inference-provider-cpp-client**: C++ client for Hugging Face Serverless Inference API. Supports object detection, image classification, image segmentation, and image-text-to-text generation. Uses `libcurl`, `OpenCV`, and `nlohmann/json`.
 
 ### Python examples
 - **multimodal_models**: Python scripts for multimodal tasks, including:
@@ -57,7 +57,7 @@ C++ and Python implementations for Hugging Face models, focusing on computer vis
 
 ### Setup Instructions
 1. **C++ Client**:
-   - Navigate to `huggingface-cpp-inference-client`.
+   - Navigate to `huggingface-inference-provider-cpp-client`.
    - Create a build directory and run:
      ```bash
      mkdir build && cd build
