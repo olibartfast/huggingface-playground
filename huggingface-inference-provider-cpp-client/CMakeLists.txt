@@ -1,6 +1,6 @@
 
 cmake_minimum_required(VERSION 3.20)
-project(huggingface-cpp-inference-client)
+project(huggingface-inference-provider-cpp-client)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

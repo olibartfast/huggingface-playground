@@ -5,16 +5,17 @@ C++ and Python implementations for Hugging Face models, focusing on computer vis
 ## Key Features
 
 - **Multi-Modal Models**: Qwen2.5-VL, CLIP, Grounding DINO, and OwlViT/OwlV2
-- **Vision Models**: Depth estimation, self-supervised learning, object detection, and segmentation
-- **Multiple Inference Methods**: Pipeline, AutoModel, and custom implementations
-- **C++ Client**: High-performance client for Hugging Face Serverless API
+- **Vision Models**: Depth estimation, DINOv3, ViTPose, RT-DETR, and SAM2
+- **Video Classification**: C++ implementation using Triton Inference Server
+- **Hugging Face Inference Provider Client**: C++ Client for Hugging Face Serverless API
 - **Visualization Tools**: Built-in plotting and visualization
 - **Modular Architecture**: Specialized requirements for different model families
 
 ## Repository Structure
 
 ### C++ examples
-- **huggingface-cpp-inference-client**: C++ client for Hugging Face Serverless Inference API. Supports object detection, image classification, image segmentation, and image-text-to-text generation. Uses `libcurl`, `OpenCV`, and `nlohmann/json`.
+- **huggingface-inference-provider-cpp-client**: C++ client for Hugging Face Serverless Inference API. Supports object detection, image classification, image segmentation, and image-text-to-text generation. Uses `libcurl`, `OpenCV`, and `nlohmann/json`.
+- **video_classification**: C++ application for video classification (e.g., VideoMAE) using Triton Inference Server, OpenCV, and C++20.
 
 ### Python examples
 - **multimodal_models**: Python scripts for multimodal tasks, including:
@@ -24,10 +25,12 @@ C++ and Python implementations for Hugging Face models, focusing on computer vis
   - `qwen2.5-vl_examples.py`: Additional examples for Qwen2.5-VL models.
   - `clip.py`: Image-text similarity, zero-shot classification, and feature extraction.
 - **vision_models**: Python scripts for vision-specific tasks:
+  - `dinov3.py` & `dinov2.py`: State-of-the-art self-supervised vision transformers for features and classification.
+  - `vitpose.py`: High-accuracy pose estimation.
+  - `specialized_segmentation_models.py`: Instance segmentation using Mask R-CNN, DETR, and RT-DETR.
   - `rtdetrv2.py`: Object detection using RT-DETRv2 models.
   - `samv2.py`: Image segmentation using SAM2, integrated with RT-DETRv2.
   - `deep_anything_v2.py`: Monocular depth estimation using Depth Anything V2.
-  - `dinov2.py`: Self-supervised vision transformer for feature extraction and classification.
 - **other_examples**: Additional Python scripts demonstrating various Hugging Face tasks:
   - `automatic_speech_recognition.py`: Audio processing using the LibriSpeech dataset.
   - `nlp_chatbot.py`: Conversational AI using Blenderbot.
@@ -35,29 +38,26 @@ C++ and Python implementations for Hugging Face models, focusing on computer vis
   - `sentence_embeddings.py`: Text embeddings using Sentence Transformers.
   - `translation.py`: Text translation with NLLB-200.
   - `zeroshot_audio_classification.py`: Zero-shot audio classification using CLAP.
-  - `setup_huggingface_venv.sh` and `setup_huggingface_venv.md`: Scripts and instructions for setting up a Python virtual environment for Hugging Face libraries.
-  - Requirements files (`requirements.txt`, `requirements.sentence_embeddings.txt`, `requirements.zeroshot_audio_classification.txt`) for dependency management.
-  - Additional specialized requirements files in multimodal_models directory (`requirements.clip.txt`, `requirements.qwen2.5-vl.txt`) for specific model dependencies.
+
+### Notebooks
+  - `dinov3_comprehensive_tutorial.ipynb`: A deep dive into DINOv3 features and applications.
 
 ## Getting Started
 
 ### Prerequisites
-- **C++ Client**:
-  - CMake 3.20+
+- **C++ Clients**:
+  - CMake 3.20+ (3.25+ for video classification)
+  - C++17/20 compatible compiler
   - libcurl, OpenCV, nlohmann/json
-  - cpp-base64 and cxxopts (fetched via CMake)
-  - Hugging Face API token (`HF_TOKEN`) set as an environment variable
+  - Triton Inference Server (for video classification)
 - **Python Scripts**:
   - Python 3.12+
   - Install dependencies from `requirements.txt` in the respective directories
-  - PyTorch (CPU or GPU, depending on hardware and model requirements)
-  - Additional libraries like `sam2`, `sentence-transformers`, `soundfile`, `librosa`, `pydub`, and `pyaudio` for specific scripts
-  - For vision-language models: `transformers>=4.37.0`, `qwen-vl-utils` for Qwen2.5-VL
-  - For depth estimation: `transformers[vision]` with appropriate torch versions
+  - PyTorch (CPU or GPU)
 
 ### Setup Instructions
-1. **C++ Client**:
-   - Navigate to `huggingface-cpp-inference-client`.
+1. **C++ Inference Client**:
+   - Navigate to `huggingface-inference-provider-cpp-client`.
    - Create a build directory and run:
      ```bash
      mkdir build && cd build
@@ -68,16 +68,16 @@ C++ and Python implementations for Hugging Face models, focusing on computer vis
      ```bash
      export HF_TOKEN=<your_huggingface_token>
      ```
-   - Run the client with:
+
+2. **Video Classification (C++)**:
+   - Navigate to `video_classification`.
+   - Use CMake Presets:
      ```bash
-     ./huggingface_app --input <image_path> --task <task_type> --model <model_url>
-     ```
-     Example:
-     ```bash
-     ./huggingface_app --input image.jpg --task object-detection --model https://api-inference.huggingface.co/models/facebook/detr-resnet-50
+     cmake --preset=release
+     cmake --build --preset=release
      ```
 
-2. **Python Environment**:
+3. **Python Environment**:
    - Follow instructions in `other_examples/setup_huggingface_venv.md` to set up a virtual environment:
      ```bash
      chmod +x other_examples/setup_huggingface_venv.sh
