@@ -1,6 +1,6 @@
 # Hugging Face C++ Inference Client
 
-A modern C++17 client library for interacting with the Hugging Face Inference API, designed for computer vision tasks with built-in visualization capabilities.
+A modern C++17 client library for interacting with the [Hugging Face Inference Provider API](https://huggingface.co/docs/inference-providers/providers/hf-inference), designed for computer vision tasks with built-in visualization capabilities.
 
 ## Features
 
