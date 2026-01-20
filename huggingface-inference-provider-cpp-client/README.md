@@ -63,7 +63,7 @@ brew install cmake curl opencv nlohmann-json
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd huggingface-cpp-inference-client
+cd huggingface-inference-provider-cpp-client
 
 # Create build directory
 mkdir build && cd build
