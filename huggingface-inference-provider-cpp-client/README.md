@@ -1,6 +1,6 @@
 # Hugging Face C++ Inference Client
 
-A modern C++17 client library for interacting with the Hugging Face Inference API, designed for computer vision tasks with built-in visualization capabilities.
+A modern C++17 client library for interacting with the [Hugging Face Inference Provider API](https://huggingface.co/docs/inference-providers/providers/hf-inference), designed for computer vision tasks with built-in visualization capabilities.
 
 ## Features
 
@@ -63,7 +63,7 @@ brew install cmake curl opencv nlohmann-json
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd huggingface-cpp-inference-client
+cd huggingface-inference-provider-cpp-client
 
 # Create build directory
 mkdir build && cd build
