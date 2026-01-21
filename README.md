@@ -6,6 +6,7 @@ C++ and Python implementations for Hugging Face models, focusing on computer vis
 
 - **Multi-Modal Models**: Qwen2.5-VL, CLIP, Grounding DINO, and OwlViT/OwlV2
 - **Vision Models**: Depth estimation, DINOv3, ViTPose, RT-DETR, and SAM2
+- **Pose Estimation**: ViTPose for human pose estimation
 - **Video Classification**: C++ implementation using Triton Inference Server
 - **Hugging Face Inference Provider Client**: C++ Client for Hugging Face Serverless API
 - **Visualization Tools**: Built-in plotting and visualization
@@ -15,6 +16,7 @@ C++ and Python implementations for Hugging Face models, focusing on computer vis
 
 ### C++ examples
 - **huggingface-inference-provider-cpp-client**: C++ client for Hugging Face Serverless Inference API. Supports object detection, image classification, image segmentation, and image-text-to-text generation. Uses `libcurl`, `OpenCV`, and `nlohmann/json`.
+- **pose_estimation**: C++ application for pose estimation using ViTPose models exported to ONNX Runtime.
 - **video_classification**: C++ application for video classification (e.g., VideoMAE) using Triton Inference Server, OpenCV, and C++20.
 
 ### Python examples
@@ -23,9 +25,14 @@ C++ and Python implementations for Hugging Face models, focusing on computer vis
   - `owl.py`: Zero-shot object detection using OwlViT or OwlV2 models.
   - `qwen2.5-vl.py`: Vision-language inference with single and multi-image support.
   - `qwen2.5-vl_examples.py`: Additional examples for Qwen2.5-VL models.
+  - `qwen2.5-vl_object_detection.py`: Object detection using Qwen2.5-VL.
+  - `object_detection_example.py`: Example for object detection with Qwen2.5-VL.
+  - `qwen2.5-vl_object_detection_example.py`: Another example for object detection.
   - `clip.py`: Image-text similarity, zero-shot classification, and feature extraction.
 - **vision_models**: Python scripts for vision-specific tasks:
   - `dinov3.py` & `dinov2.py`: State-of-the-art self-supervised vision transformers for features and classification.
+  - `dinov3_finetuned_segmentation.py`: Finetuned DINOv3 for segmentation tasks.
+  - `dinov3_sam_segmentation.py`: Integration of DINOv3 with SAM for segmentation.
   - `vitpose.py`: High-accuracy pose estimation.
   - `specialized_segmentation_models.py`: Instance segmentation using Mask R-CNN, DETR, and RT-DETR.
   - `rtdetrv2.py`: Object detection using RT-DETRv2 models.
@@ -77,7 +84,16 @@ C++ and Python implementations for Hugging Face models, focusing on computer vis
      cmake --build --preset=release
      ```
 
-3. **Python Environment**:
+3. **Pose Estimation (C++)**:
+   - Navigate to `pose_estimation`.
+   - Create a build directory and run:
+     ```bash
+     mkdir build && cd build
+     cmake ..
+     make
+     ```
+
+4. **Python Environment**:
    - Follow instructions in `other_examples/setup_huggingface_venv.md` to set up a virtual environment:
      ```bash
      chmod +x other_examples/setup_huggingface_venv.sh
@@ -86,7 +102,7 @@ C++ and Python implementations for Hugging Face models, focusing on computer vis
      ```
    - Install additional dependencies for specific scripts (e.g., `sam2` for `vision_models/samv2.py`).
 
-3. **Running Python Scripts**:
+5. **Running Python Scripts**:
    - Example for `vision_models/rtdetrv2.py`:
      ```bash
      python vision_models/rtdetrv2.py --image_url <url> --output_dir output
