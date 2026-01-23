@@ -1,15 +1,14 @@
-
 #include "video_classification/triton_client.hpp"
 #include "video_classification/videomae_image_processor.hpp"
 #include "video_classification/vivit_image_processor.hpp"
+#include "video_classification/timesformer_image_processor.hpp"
+#include "video_classification/video_utils.hpp"
 #include <iostream>
 #include <memory>
 #include <opencv2/opencv.hpp>
 #include <rapidjson/document.h>
 #include <stdexcept>
 #include <vector>
-
-#include "video_classification/video_utils.hpp"
 
 int main(int argc, char **argv) {
   std::string model_name = "videomae_large";
@@ -64,21 +63,26 @@ int main(int argc, char **argv) {
     std::unique_ptr<ImageProcessor> processor;
     rapidjson::Document config;
     if (model_name.find("vivit") != std::string::npos) {
-        std::string config_json =
-            R"({"shortest_edge": 256, "crop_size": 224, "rescale_factor": 0.00784313725, "offset": true, "mean": [0.485, 0.456, 0.406], "std": [0.229, 0.224, 0.225]})";
-        config.Parse(config_json.c_str());
-        if (config.HasParseError()) {
-            throw std::runtime_error("Failed to parse ViViT config JSON");
-        }
-        processor = std::make_unique<VivitImageProcessor>(config);
+      std::string config_json = R"({\"shortest_edge\": 256, \"crop_size\": 224, \"rescale_factor\": 0.00784313725, \"offset\": true, \"mean\": [0.485, 0.456, 0.406], \"std\": [0.229, 0.224, 0.225]})";
+      config.Parse(config_json.c_str());
+      if (config.HasParseError()) {
+        throw std::runtime_error("Failed to parse ViViT config JSON");
+      }
+      processor = std::make_unique<VivitImageProcessor>(config);
+    } else if (model_name.find("timesformer") != std::string::npos) {
+      std::string config_json = R"({\"shortest_edge\": 224, \"crop_size\": 224, \"rescale_factor\": 0.003921568627, \"mean\": [0.45, 0.45, 0.45], \"std\": [0.225, 0.225, 0.225]})";
+      config.Parse(config_json.c_str());
+      if (config.HasParseError()) {
+        throw std::runtime_error("Failed to parse TimeSformer config JSON");
+      }
+      processor = std::make_unique<TimeSformerImageProcessor>(config);
     } else {
-        std::string config_json =
-            R"({"image_size": 224, "mean": [0.485, 0.456, 0.406], "std": [0.229, 0.224, 0.225]})";
-        config.Parse(config_json.c_str());
-        if (config.HasParseError()) {
-            throw std::runtime_error("Failed to parse VideoMAE config JSON");
-        }
-        processor = std::make_unique<VideoMAEImageProcessor>(config);
+      std::string config_json = R"({\"image_size\": 224, \"mean\": [0.485, 0.456, 0.406], \"std\": [0.229, 0.224, 0.225]})";
+      config.Parse(config_json.c_str());
+      if (config.HasParseError()) {
+        throw std::runtime_error("Failed to parse VideoMAE config JSON");
+      }
+      processor = std::make_unique<VideoMAEImageProcessor>(config);
     }
 
     // Read video frames at 1 FPS
