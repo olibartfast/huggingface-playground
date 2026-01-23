@@ -3,6 +3,7 @@ add_library(video_classification_core STATIC
     triton_client.cpp
     video_processor.cpp
     videomae_image_processor.cpp
+    vivit_image_processor.cpp
     video_utils.cpp
 )
 
