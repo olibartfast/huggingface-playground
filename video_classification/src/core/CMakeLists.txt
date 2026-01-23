@@ -4,6 +4,7 @@ add_library(video_classification_core STATIC
     video_processor.cpp
     videomae_image_processor.cpp
     vivit_image_processor.cpp
+    timesformer_image_processor.cpp
     video_utils.cpp
 )
 
