@@ -1,7 +1,9 @@
 
 #include "video_classification/triton_client.hpp"
 #include "video_classification/videomae_image_processor.hpp"
+#include "video_classification/vivit_image_processor.hpp"
 #include <iostream>
+#include <memory>
 #include <opencv2/opencv.hpp>
 #include <rapidjson/document.h>
 #include <stdexcept>
@@ -13,7 +15,7 @@ int main(int argc, char **argv) {
   std::string model_name = "videomae_large";
   std::string url = "http://localhost:8000";
   std::string video_path;
-  std::string labels_file = "labels/kinetics400.txt"; 
+  std::string labels_file = "labels/kinetics400.txt";
   int batch_size = 1;
   int window_size = 16;
 
@@ -59,14 +61,25 @@ int main(int argc, char **argv) {
     client.get_model_info(model_name, model_info);
 
     // Initialize processor
-    std::string config_json =
-        R"({"image_size": 224, "mean": [0.485, 0.456, 0.406], "std": [0.229, 0.224, 0.225]})";
+    std::unique_ptr<ImageProcessor> processor;
     rapidjson::Document config;
-    config.Parse(config_json.c_str());
-    if (config.HasParseError()) {
-      throw std::runtime_error("Failed to parse config JSON");
+    if (model_name.find("vivit") != std::string::npos) {
+        std::string config_json =
+            R"({"shortest_edge": 256, "crop_size": 224, "rescale_factor": 0.00784313725, "offset": true, "mean": [0.485, 0.456, 0.406], "std": [0.229, 0.224, 0.225]})";
+        config.Parse(config_json.c_str());
+        if (config.HasParseError()) {
+            throw std::runtime_error("Failed to parse ViViT config JSON");
+        }
+        processor = std::make_unique<VivitImageProcessor>(config);
+    } else {
+        std::string config_json =
+            R"({"image_size": 224, "mean": [0.485, 0.456, 0.406], "std": [0.229, 0.224, 0.225]})";
+        config.Parse(config_json.c_str());
+        if (config.HasParseError()) {
+            throw std::runtime_error("Failed to parse VideoMAE config JSON");
+        }
+        processor = std::make_unique<VideoMAEImageProcessor>(config);
     }
-    VideoMAEImageProcessor processor(config);
 
     // Read video frames at 1 FPS
     auto frames = read_video_frames(video_path, window_size);
@@ -79,7 +92,7 @@ int main(int argc, char **argv) {
     }
 
     // Preprocess frames
-    auto pixel_values = processor.process(frames, model_info.input_c_,
+    auto pixel_values = processor->process(frames, model_info.input_c_,
                                           model_info.input_format_);
 
     // Validate input data size
