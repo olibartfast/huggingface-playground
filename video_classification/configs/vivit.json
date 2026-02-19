@@ -1,0 +1,9 @@
+{
+  "model_type": "vivit",
+  "shortest_edge": 256,
+  "crop_size": 224,
+  "rescale_factor": 0.00784313725,
+  "offset": true,
+  "mean": [0.485, 0.456, 0.406],
+  "std": [0.229, 0.224, 0.225]
+}

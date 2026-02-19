@@ -31,14 +31,22 @@ This project uses CMake Presets for easy configuration. The vcpkg dependency man
    cd video_classification
    ```
 
-2. **Configure**:
+2. **Set Triton Client Path** (if not in default location):
+   ```bash
+   export TRITON_CLIENT_ROOT=/path/to/triton_client_libs/install
+   # OR set via CMake cache variable
+   ```
+
+3. **Configure**:
    ```bash
    cmake --preset=debug
    # OR for release
    cmake --preset=release
+   # OR specify Triton path directly
+   cmake --preset=debug -DTRITON_CLIENT_ROOT=/path/to/triton
    ```
 
-3. **Build**:
+4. **Build**:
    ```bash
    cmake --build --preset=debug
    # OR for release
@@ -58,10 +66,42 @@ The main executable `video_classification_app` takes a video file as input.
 - `-u <url>`: Triton server URL (default: `http://localhost:8000`)
 - `-b <batch_size>`: Batch size (default: 1)
 - `-l <labels_file>`: Path to labels file (default: `labels/kinetics400.txt`)
+- `-c <config_file>`: Path to model configuration file (optional)
+- `-t <model_type>`: Model type: `videomae`, `vivit`, or `timesformer` (default: `videomae`)
 
-### Example:
+### Examples:
 ```bash
-./build/debug/src/app/video_classification_app -l labels/kinetics400.txt /path/to/my/video.mp4
+# Basic usage with default VideoMAE settings
+./build/debug/src/app/video_classification_app /path/to/my/video.mp4
+
+# Specify model type
+./build/debug/src/app/video_classification_app -t vivit -m vivit_model /path/to/my/video.mp4
+
+# Use custom config file
+./build/debug/src/app/video_classification_app -c configs/custom_model.json /path/to/my/video.mp4
+
+# Full example with all options
+./build/debug/src/app/video_classification_app \
+  -m videomae_large \
+  -u http://localhost:8000 \
+  -b 1 \
+  -l labels/kinetics400.txt \
+  -t videomae \
+  /path/to/my/video.mp4
+```
+
+## Configuration Files
+
+Model configurations can be specified via JSON files in the `configs/` directory. See `configs/videomae.json`, `configs/vivit.json`, and `configs/timesformer.json` for examples.
+
+Example configuration:
+```json
+{
+  "model_type": "videomae",
+  "image_size": 224,
+  "mean": [0.485, 0.456, 0.406],
+  "std": [0.229, 0.224, 0.225]
+}
 ```
 
 ## Testing

@@ -40,43 +40,9 @@ VideoMAEImageProcessor::process(const std::vector<cv::Mat> &frames,
 
     std::vector<cv::Mat> channels_vec(static_cast<size_t>(channels));
     cv::split(float_frame, channels_vec);
-    for (int c = 0; c < channels; ++c) {
-      channels_vec[static_cast<size_t>(c)] =
-          (channels_vec[static_cast<size_t>(c)] -
-           mean[static_cast<size_t>(c)]) /
-          std[static_cast<size_t>(c)];
-      if (format == "FORMAT_NCHW" || format == "FORMAT_NONE") {
-        // Ensure contiguous memory access via pointer if needed, or just
-        // iterate Mat::data is uchar*, for float we need to cast or use
-        // ptr<float> Using insert is cleaner but we need to be careful with
-        // types. OpenCv Mat is row-major. insert expects iterators.
-        if (channels_vec[static_cast<size_t>(c)].isContinuous()) {
-          const float *ptr = channels_vec[static_cast<size_t>(c)].ptr<float>();
-          pixel_values.insert(pixel_values.end(), ptr,
-                              ptr + image_size * image_size);
-        } else {
-          // Fallback for non-continuous, though split usually produces
-          // continuous
-          for (int r = 0; r < channels_vec[static_cast<size_t>(c)].rows; ++r) {
-            const float *ptr =
-                channels_vec[static_cast<size_t>(c)].ptr<float>(r);
-            pixel_values.insert(pixel_values.end(), ptr,
-                                ptr +
-                                    channels_vec[static_cast<size_t>(c)].cols);
-          }
-        }
-      }
-    }
-    if (format == "FORMAT_NHWC") {
-      for (int h = 0; h < image_size; ++h) {
-        for (int w = 0; w < image_size; ++w) {
-          for (int c = 0; c < channels; ++c) {
-            pixel_values.push_back(
-                channels_vec[static_cast<size_t>(c)].at<float>(h, w));
-          }
-        }
-      }
-    }
+
+    auto frame_pixels = normalize_and_convert(channels_vec, mean, std, channels, image_size, format);
+    pixel_values.insert(pixel_values.end(), frame_pixels.begin(), frame_pixels.end());
   }
   return pixel_values;
 }
