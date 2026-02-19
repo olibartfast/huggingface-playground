@@ -78,37 +78,9 @@ VivitImageProcessor::process(const std::vector<cv::Mat> &frames, int channels,
     // Normalize and convert to NCHW/NHWC
     std::vector<cv::Mat> channels_vec(static_cast<size_t>(channels));
     cv::split(float_frame, channels_vec);
-    for (int c = 0; c < channels; ++c) {
-      channels_vec[static_cast<size_t>(c)] =
-          (channels_vec[static_cast<size_t>(c)] -
-           mean[static_cast<size_t>(c)]) /
-          std[static_cast<size_t>(c)];
-      if (format == "FORMAT_NCHW" || format == "FORMAT_NONE") {
-        if (channels_vec[static_cast<size_t>(c)].isContinuous()) {
-          const float *ptr = channels_vec[static_cast<size_t>(c)].ptr<float>();
-          pixel_values.insert(pixel_values.end(), ptr,
-                              ptr + crop_size * crop_size);
-        } else {
-          for (int r = 0; r < channels_vec[static_cast<size_t>(c)].rows; ++r) {
-            const float *ptr =
-                channels_vec[static_cast<size_t>(c)].ptr<float>(r);
-            pixel_values.insert(pixel_values.end(), ptr,
-                                ptr +
-                                    channels_vec[static_cast<size_t>(c)].cols);
-          }
-        }
-      }
-    }
-    if (format == "FORMAT_NHWC") {
-      for (int h = 0; h < crop_size; ++h) {
-        for (int w = 0; w < crop_size; ++w) {
-          for (int c = 0; c < channels; ++c) {
-            pixel_values.push_back(
-                channels_vec[static_cast<size_t>(c)].at<float>(h, w));
-          }
-        }
-      }
-    }
+
+    auto frame_pixels = normalize_and_convert(channels_vec, mean, std, channels, crop_size, format);
+    pixel_values.insert(pixel_values.end(), frame_pixels.begin(), frame_pixels.end());
   }
   return pixel_values;
 }

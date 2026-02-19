@@ -7,7 +7,15 @@
 #include <fstream>
 #include <iostream>
 
-// Removed static ID2LABEL initialization
+namespace tc = triton::client;
+
+// Constants
+namespace {
+constexpr const char* DEFAULT_MODEL_VERSION = "4";
+constexpr int DEFAULT_FRAME_COUNT = 16;
+constexpr int DEFAULT_IMAGE_SIZE = 224;
+constexpr int DEFAULT_CHANNELS = 3;
+}
 
 void TritonClient::load_labels(const std::string &labels_file) {
   if (labels_file.empty()) {
@@ -145,15 +153,19 @@ void TritonClient::parse_model_http(const rapidjson::Document &model_metadata,
   // Validate input shape matches [batch, 16, 3, 224, 224]
   int frame_idx = input_batch_dim ? 1 : 0;
   if (input_shape_itr->value[static_cast<rapidjson::SizeType>(frame_idx)]
-              .GetInt() != 16 ||
+              .GetInt() != DEFAULT_FRAME_COUNT ||
       input_shape_itr->value[static_cast<rapidjson::SizeType>(frame_idx) + 1]
-              .GetInt() != 3 ||
+              .GetInt() != DEFAULT_CHANNELS ||
       input_shape_itr->value[static_cast<rapidjson::SizeType>(frame_idx) + 2]
-              .GetInt() != 224 ||
+              .GetInt() != DEFAULT_IMAGE_SIZE ||
       input_shape_itr->value[static_cast<rapidjson::SizeType>(frame_idx) + 3]
-              .GetInt() != 224) {
+              .GetInt() != DEFAULT_IMAGE_SIZE) {
     throw std::runtime_error(
-        "Unexpected input shape, expecting [batch, 16, 3, 224, 224]");
+        "Unexpected input shape, expecting [batch, " +
+        std::to_string(DEFAULT_FRAME_COUNT) + ", " +
+        std::to_string(DEFAULT_CHANNELS) + ", " +
+        std::to_string(DEFAULT_IMAGE_SIZE) + ", " +
+        std::to_string(DEFAULT_IMAGE_SIZE) + "]");
   }
 
   // Handle input format
@@ -223,7 +235,7 @@ void TritonClient::get_model_info(const std::string &model_name,
   tc::Error err;
   std::string model_metadata;
   err = http_client_->ModelMetadata(&model_metadata, model_name,
-                                    "4"); // Match version_policy
+                                    DEFAULT_MODEL_VERSION);
   if (!err.IsOk()) {
     throw std::runtime_error("Failed to get model metadata: " + err.Message());
   }
@@ -235,7 +247,7 @@ void TritonClient::get_model_info(const std::string &model_name,
   }
 
   std::string model_config;
-  err = http_client_->ModelConfig(&model_config, model_name, "4");
+  err = http_client_->ModelConfig(&model_config, model_name, DEFAULT_MODEL_VERSION);
   if (!err.IsOk()) {
     throw std::runtime_error("Failed to get model config: " + err.Message());
   }
@@ -280,7 +292,7 @@ TritonClient::infer(const std::vector<float> &input_data,
   std::vector<const tc::InferRequestedOutput *> outputs = {output_ptr.get()};
 
   tc::InferOptions options(model_name);
-  options.model_version_ = "4"; // Match version_policy
+  options.model_version_ = DEFAULT_MODEL_VERSION;
 
   tc::InferResult *result;
   err = http_client_->Infer(&result, options, inputs, outputs);
