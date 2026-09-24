@@ -165,6 +165,7 @@ C++ and Python implementations for Hugging Face models, focusing on computer vis
 - **V-JEPA 2**: Self-supervised video encoder (no released HMDB-51 head; probed)
 - **VideoPrism**: Factorised spatio-temporal encoder (probed)
 - **PE Video**: Perception Encoder video tower, CLIP-style video/text (probed)
+- **LeVJEPA**: Heuristic-free V-JEPA — a single ViT-L/16 encoder + small projector trained with a multi-view invariance loss and the SIGReg isotropic-Gaussian regulariser (no EMA target encoder, predictor or stop-gradient), per-frame tokenisation, up to 95% random token dropping and optional block-causal attention ([code](https://github.com/MLO-lab/LeVJEPA), [paper](https://arxiv.org/abs/2608.27395), checkpoint [`galilai-group/LeVJEPA-VideoMix-Large`](https://huggingface.co/galilai-group/LeVJEPA-VideoMix-Large); not yet in the HMDB-51 benchmark)
 
 ### Inference Methods
 - **Pipeline API**: High-level interface
