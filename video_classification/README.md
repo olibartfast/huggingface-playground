@@ -126,6 +126,7 @@ Unit tests are managed by GoogleTest.
  # Resources
  - https://huggingface.co/docs/transformers/tasks/video_classification
  - https://huggingface.co/docs/transformers/model_doc/vjepa2
+ - https://github.com/MLO-lab/LeVJEPA (LeVJEPA: V-JEPA without EMA teacher/predictor, SIGReg-regularised; checkpoint `galilai-group/LeVJEPA-VideoMix-Large`)
  - https://huggingface.co/docs/transformers/model_doc/pe_video
  - https://huggingface.co/docs/transformers/model_doc/videomae
  - https://huggingface.co/docs/transformers/model_doc/vivit
