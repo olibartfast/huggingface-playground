@@ -33,6 +33,8 @@ C++ and Python implementations for Hugging Face models, focusing on computer vis
 
   This ranks *mean-pooled linear probing*, not backbone capability — V-JEPA 2 is penalised by averaging ~8192 patch tokens, while its own classifier uses an attentive pooler. Note that PE's small/base/large labels size only the temporal fusion encoder; all three share one PE-Core Large ViT backbone, so a smaller checkpoint buys capacity, not speed.
 
+- **Code2Video** (HeyGen, external — not implemented here): measures whether LLMs can write motion-graphics code (HTML/React, rendered deterministically to video with HyperFrames) from a design brief. 168 human-made reference compositions across eight product-launch beats (hook, problem, product intro, key feature, benefit, social proof, CTA, brand outro). Scored by a pairwise judge model trained on human preferences (~82% agreement with raters) on five axes: engagement, prompt intent, composition, temporal (timing/easing) and craft, aggregated into Elo. Headline finding: following the brief is nearly solved, motion-design craft is not. See the [announcement](https://www.heygen.com/research/introducing-code2video-benchmark) and the [Kaggle leaderboard](https://www.kaggle.com/benchmarks/heygen/code2video).
+
 ### Python examples
 - **multimodal_models**: Python scripts for multimodal tasks, including:
   - `grounding_dino.py`: Zero-shot object detection with text prompts.
